@@ -30,4 +30,4 @@ The service is deployed with `firebase deploy --only functions:analysis` from th
 
 ## Source
 
-The published copy of this folder is kept at the repository named in the TidySounds app under Settings, "Track analysis source".
+The published copy of this folder lives at https://github.com/OleWahn/tidysounds-track-analysis, linked from the TidySounds app under Settings, "Track analysis source". It is refreshed with `npm run publish:analysis` from the TidySounds repository before every release that changes it.
