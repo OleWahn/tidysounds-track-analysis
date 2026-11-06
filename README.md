@@ -6,7 +6,7 @@ This folder is its own Firebase Functions codebase (`analysis` in `firebase.json
 
 ## What it does
 
-`analyzeRecording` is an HTTP function with a private invoker: only TidySounds' own functions can call it, with a Google ID token.
+`analyzeRecording` is an HTTP function with a private invoker: only principals with `roles/run.invoker` on it can call it, with a Google ID token. TidySounds grants that to its functions' runtime service account and to the service account its migrations run as.
 
 ```
 POST /
