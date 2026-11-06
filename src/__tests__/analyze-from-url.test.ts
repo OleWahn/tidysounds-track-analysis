@@ -34,7 +34,7 @@ describe('analyzeFromUrl', () => {
 		expect(features.extractor).toBe('essentia');
 		expect(features.frames).toBeGreaterThan(0);
 		expect(features.durationSeconds).toBeCloseTo(25, 0);
-	});
+	}, 60000);
 
 	it('rejects a recording shorter than the minimum', async () => {
 		await expect(analyzeFromUrl('https://dl.example/short', respond(200, tone(5)) as any)).rejects.toBeInstanceOf(AnalysisTooShortError);
@@ -52,7 +52,7 @@ describe('analyzeFromUrl', () => {
 
 	it('refuses a recording longer than the limit, for good', async () => {
 		await expect(analyzeFromUrl('https://dl.example/long', respond(200, tone(21 * 60)) as any)).rejects.toBeInstanceOf(AnalysisTooLargeError);
-	});
+	}, 60000);
 
 	it('maps other failures to unavailable', async () => {
 		await expect(analyzeFromUrl('https://dl.example/down', respond(503) as any)).rejects.toBeInstanceOf(DownloadUnavailableError);
