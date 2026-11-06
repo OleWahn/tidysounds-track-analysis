@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { AudioDecodeError } from '../../../shared/custom-errors';
+import { AudioDecodeError } from '../errors';
 import { ANALYSIS_SAMPLE_RATE } from './constants';
 
 const STDERR_TAIL_LENGTH = 400;

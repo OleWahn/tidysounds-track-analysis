@@ -1,4 +1,4 @@
-export type ExtractorId = 'meyda' | 'essentia';
+export type ExtractorId = 'essentia';
 
 /**
  * The chroma features of one recording: 12 pitch-class bytes per frame.

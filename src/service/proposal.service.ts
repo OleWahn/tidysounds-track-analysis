@@ -1,7 +1,7 @@
 import { FieldValue, Firestore, Timestamp } from 'firebase-admin/firestore';
 import * as logger from 'firebase-functions/logger';
-import { AnalysisTooShortError, AudioDecodeError, StorageError } from '../../../shared/custom-errors';
-import { ANALYSIS_COLLECTION, TRACK_FEATURES_DOC, TRACK_PROPOSAL_DOC, TrackProposal } from '../../../shared/types';
+import { retryableFailure } from '../errors';
+import { ANALYSIS_COLLECTION, TRACK_FEATURES_DOC, TRACK_PROPOSAL_DOC, TrackProposal } from '../types';
 import {
 	ChromaFeatures,
 	chooseProposal,
@@ -68,12 +68,6 @@ export const ensureRecordingFeatures = async (deps: ProposalServiceDeps, communi
 		computedAt: Timestamp.fromMillis(deps.now())
 	});
 	return features;
-};
-
-const retryableFailure = (error: unknown): boolean => {
-	if (error instanceof StorageError) return error.kind !== 'not_found';
-	if (error instanceof AudioDecodeError || error instanceof AnalysisTooShortError) return false;
-	return true;
 };
 
 const failureName = (error: unknown): string => (error instanceof Error ? error.name : String(error));

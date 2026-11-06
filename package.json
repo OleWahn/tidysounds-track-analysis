@@ -4,7 +4,7 @@
 	"description": "Track analysis service of TidySounds: decodes a rehearsal recording, extracts chroma features with essentia.js and proposes the track it belongs to. Deployed as its own Firebase Functions codebase and published under AGPL-3.0.",
 	"license": "AGPL-3.0-only",
 	"private": true,
-	"main": "lib/functions-analysis/src/index.js",
+	"main": "lib/index.js",
 	"engines": {
 		"node": "22"
 	},

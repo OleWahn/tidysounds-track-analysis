@@ -2,7 +2,7 @@ import { execFileSync } from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { AnalysisTooShortError, StorageNotFoundError, StorageUnavailableError } from '../../../shared/custom-errors';
+import { AnalysisTooLargeError, AnalysisTooShortError, DownloadNotFoundError, DownloadUnavailableError } from '../errors';
 import { analyzeFromUrl } from '../service/analyze-from-url';
 
 const respond = (status: number, body?: Buffer) =>
@@ -41,12 +41,22 @@ describe('analyzeFromUrl', () => {
 	});
 
 	it('maps 404 to a missing file', async () => {
-		await expect(analyzeFromUrl('https://dl.example/gone', respond(404) as any)).rejects.toBeInstanceOf(StorageNotFoundError);
+		await expect(analyzeFromUrl('https://dl.example/gone', respond(404) as any)).rejects.toBeInstanceOf(DownloadNotFoundError);
+	});
+
+	it('refuses a file that declares itself larger than the limit, for good', async () => {
+		const fetch = jest.fn(async () => ({ ok: true, status: 200, headers: { get: (name: string) => (name === 'content-length' ? String(200 * 1024 * 1024) : null) }, arrayBuffer: async () => new ArrayBuffer(0) }));
+		await expect(analyzeFromUrl('https://dl.example/huge', fetch as any)).rejects.toBeInstanceOf(AnalysisTooLargeError);
+		await expect(analyzeFromUrl('https://dl.example/huge', fetch as any)).rejects.toMatchObject({ retryable: false });
+	});
+
+	it('refuses a recording longer than the limit, for good', async () => {
+		await expect(analyzeFromUrl('https://dl.example/long', respond(200, tone(21 * 60)) as any)).rejects.toBeInstanceOf(AnalysisTooLargeError);
 	});
 
 	it('maps other failures to unavailable', async () => {
-		await expect(analyzeFromUrl('https://dl.example/down', respond(503) as any)).rejects.toBeInstanceOf(StorageUnavailableError);
+		await expect(analyzeFromUrl('https://dl.example/down', respond(503) as any)).rejects.toBeInstanceOf(DownloadUnavailableError);
 		const broken = jest.fn(async () => { throw new Error('socket hang up'); });
-		await expect(analyzeFromUrl('https://dl.example/down', broken as any)).rejects.toBeInstanceOf(StorageUnavailableError);
+		await expect(analyzeFromUrl('https://dl.example/down', broken as any)).rejects.toBeInstanceOf(DownloadUnavailableError);
 	});
 });

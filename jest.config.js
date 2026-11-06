@@ -7,9 +7,6 @@ module.exports = {
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
-  moduleNameMapper: {
-    '^@shared/(.*)$': '<rootDir>/../shared/$1',
-  },
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: {

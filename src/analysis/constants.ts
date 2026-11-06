@@ -4,9 +4,15 @@
 export const ANALYSIS_SAMPLE_RATE = 22050;
 
 /**
- * Length of one chroma frame in seconds: the STFT chroma is averaged into blocks of this length.
+ * Largest recording file the service downloads, in bytes: the app's own import limit (150 MB).
  */
-export const FRAME_SECONDS = 0.5;
+export const MAX_DOWNLOAD_BYTES = 150 * 1024 * 1024;
+
+/**
+ * Longest recording the service decodes, in seconds: the app imports up to 15 minutes; a little
+ * margin for files the app accepted at the edge.
+ */
+export const MAX_DURATION_SECONDS = 20 * 60;
 
 /**
  * Version of the stored features. Bump it when extraction changes; older features are recomputed.

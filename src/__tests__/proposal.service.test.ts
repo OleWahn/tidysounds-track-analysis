@@ -1,10 +1,5 @@
 import { Timestamp } from 'firebase-admin/firestore';
-import {
-	AnalysisTooShortError,
-	AudioDecodeError,
-	StorageNotFoundError,
-	StorageUnavailableError
-} from '../../../shared/custom-errors';
+import { AnalysisTooShortError, AudioDecodeError, DownloadNotFoundError, DownloadUnavailableError } from '../errors';
 import { FEATURE_VERSION, LOCK_TIMEOUT_MS } from '../analysis/constants';
 import { ChromaFeatures } from '../analysis/extractor';
 import { ensureRecordingFeatures, proposeTrackForRecording, ProposalServiceDeps } from '../service/proposal.service';
@@ -172,8 +167,8 @@ describe('proposeTrackForRecording', () => {
 	});
 
 	it.each([
-		['a download that is temporarily unavailable', new StorageUnavailableError('download'), true],
-		['a download that answers not found', new StorageNotFoundError({ id: URL }), false],
+		['a download that is temporarily unavailable', new DownloadUnavailableError(503), true],
+		['a download that answers not found', new DownloadNotFoundError(URL), false],
 		['undecodable audio', new AudioDecodeError('Invalid data'), false],
 		['a recording that is too short', new AnalysisTooShortError(12), false],
 		['an unexpected error', new Error('boom'), true]
